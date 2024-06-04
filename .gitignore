@@ -1,3 +1,5 @@
 /target
 Cargo.lock
 out.pdf
+latex/main.pdf
+latex/build/
