@@ -117,7 +117,7 @@ fn embed_image(img: &PdfImage) -> (Chunk, Ref) {
                     }
                 }
                 lopdf::Object::Reference(r) => {
-                    let obj = img.objects.get(&r).unwrap();
+                    let obj = img.objects.get(r).unwrap();
                     // Streams are always indirect -> skip indirection
                     if let lopdf::Object::Stream(_) = obj {
                         remainder.push((*id, obj));
@@ -156,7 +156,7 @@ impl PdfImage {
         let media_box = meta
             .get(b"MediaBox")?
             .as_array()?
-            .into_iter()
+            .iter()
             .map(|o| o.as_float().unwrap())
             .collect::<Vec<_>>();
         let rect = Rect::new(media_box[0], media_box[1], media_box[2], media_box[3]);
@@ -165,7 +165,7 @@ impl PdfImage {
         // Find ressources
         let ressources = match doc.get_page_resources(page_id) {
             (Some(ressources), _) => ressources.clone(),
-            (None, ids) if ids.len() > 0 => doc.get_dictionary(ids[0])?.clone(),
+            (None, ids) if !ids.is_empty() => doc.get_dictionary(ids[0])?.clone(),
             _ => Default::default(),
         };
 
@@ -209,8 +209,8 @@ fn write_obj<'a>(
         Object::Boolean(v) => into.primitive(v),
         Object::Integer(v) => into.primitive(*v as i32),
         Object::Real(v) => into.primitive(v),
-        Object::Name(v) => into.primitive(Name(&v)),
-        Object::String(v, _) => into.primitive(Str(&v)),
+        Object::Name(v) => into.primitive(Name(v)),
+        Object::String(v, _) => into.primitive(Str(v)),
         Object::Array(v) => {
             let mut arr = into.array();
             for elem in v {
