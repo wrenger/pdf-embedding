@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::env::args;
 use std::path::Path;
 
-use pdf_writer::{Chunk, Content, Dict, Finish, Name, Obj, Pdf, Rect, Ref, Str};
+use pdf_writer::{Chunk, Content, Dict, Finish, Name, Null, Obj, Pdf, Rect, Ref, Str};
 
 static USAGE: &str = "Usage: [file.pdf] [page]";
 
@@ -205,7 +205,7 @@ fn write_obj<'a>(
 ) {
     use lopdf::Object;
     match from {
-        Object::Null => {}
+        Object::Null => into.primitive(Null),
         Object::Boolean(v) => into.primitive(v),
         Object::Integer(v) => into.primitive(*v as i32),
         Object::Real(v) => into.primitive(v),
